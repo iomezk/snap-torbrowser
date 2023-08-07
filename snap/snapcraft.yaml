@@ -1,0 +1,129 @@
+name: torbrowser
+adopt-info: tor-browser
+summary: Tor Browser
+description: |
+  Fingerprinting resisting browser bundled with Tor
+source-code: https://github.com/iomezk/snap-torbrowser
+license: MPL-2.0
+base: core22
+confinement: strict
+grade: stable
+icon: icon.svg
+
+apps:
+  torbrowser:
+    extensions: [gnome]
+    command: Browser/tor-browser
+    plugs:
+    - audio-playback
+    - browser-support
+    - home
+    - network
+    - network-bind
+    - removable-media
+    - unity7  # dbus path=/org/a11y/bus member=Get
+
+environment:
+  HOME: $SNAP_USER_COMMON
+  PATH: $SNAP/Browser:$PATH
+
+plugs:
+  browser-support:
+    allow-sandbox: true
+
+parts:
+  local:
+    source: snap/local/
+    source-type: local
+    plugin: dump
+    prime:
+    - -patches/
+  tor:
+    plugin: nil
+    stage-packages:
+    - tor
+    organize:
+      usr/bin/tor: Browser/TorBrowser/Tor/tor
+    prime:
+    - Browser/TorBrowser/Tor/tor
+  ffmpeg:
+    plugin: nil
+    stage-packages:
+    - libavcodec58
+    organize:
+      'usr/lib/**/*.so*': Browser/
+    prime:
+    - Browser/libavcodec.*
+    - Browser/libaom.*
+    - Browser/libavutil.*
+    - Browser/libOpenCL.*  # libavutil
+    - Browser/libvdpau.*  # libavutil
+    - Browser/libcodec2.*
+    - Browser/libdav1d.*
+    - Browser/libgsm.*
+    - Browser/libmfx.*
+    - Browser/libshine.*
+    - Browser/libsnappy.*
+    - Browser/libswresample.*
+    - Browser/libsoxr.*  # libswresample
+    - Browser/libx264.*
+    - Browser/libx265.*
+    - Browser/libnuma.*  # libx265
+    - Browser/libxvidcore.*
+    - Browser/libzvbi.*
+  tb-deps:
+    plugin: nil
+    stage-packages:
+    - libpci3
+    organize:
+      '**/*.so*': Browser/
+    prime:
+    - Browser/
+  tor-browser:
+    # https://dist.torproject.org/torbrowser/
+    source: https://dist.torproject.org/torbrowser/12.5.2/tor-browser-linux64-12.5.2_ALL.tar.xz
+    source-checksum: sha256/326dbf89a9e89fe46d389aa6b990a5fb670f9622a226f20e67e4f2cc9f25e5eb
+    source-type: tar
+    plugin: dump
+    override-build: |
+      craftctl default
+      cd "$CRAFT_PART_INSTALL"
+      craftctl set "version=$(jq -r .version Browser/tbb_version.json)"
+      chmod -R go=rX .
+      patch -p1 -i "$CRAFT_PROJECT_DIR/snap/local/patches/fonts-conf-remove-blank.patch"
+      mv Browser/TorBrowser/Data/Browser Browser/TorBrowser/Data/firefox
+      mv Browser/TorBrowser/Data Browser/TorBrowser/.tor\ project
+      rm -rf Browser/TorBrowser/Tor
+      for f in "Browser/omni.ja" "Browser/browser/omni.ja"; do
+        unzip -q "$f" -d omni
+        rm -f "$f"
+        cd omni
+        zip -0DXqr "../$f" *
+        cd ..
+        rm -rf omni
+      done
+    build-packages:
+    - jq
+    - patch
+    - unzip
+    - zip
+    prime:
+    - -Browser/.config
+    - '-Browser/TorBrowser/.tor project/firefox/Caches'
+    - -Browser/TorBrowser/Docs
+    - -Browser/abicheck
+    - -Browser/application.ini
+    - -Browser/browser/chrome #?
+    - -Browser/browser/features
+    - -Browser/execdesktop
+    - -Browser/firefox
+    - -Browser/icons
+    - -Browser/libstdc++
+    - -Browser/platform.ini
+    - -Browser/plugin-container
+    - -Browser/precomplete
+    - -Browser/removed-files
+    - -Browser/start-tor-browser*
+    - -Browser/tbb_version.json
+    - -Browser/update*
+    - -start-tor-browser.desktop

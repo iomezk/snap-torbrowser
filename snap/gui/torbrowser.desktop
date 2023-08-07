@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Tor Browser (snap)
+GenericName=Web Browser
+Comment=Tor Browser  is +1 for privacy and −1 for mass surveillance
+Icon=${SNAP}/meta/gui/icon.svg
+Categories=Network;WebBrowser;Security;
+Exec=torbrowser %u
+StartupWMClass=Tor Browser

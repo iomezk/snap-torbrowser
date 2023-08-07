@@ -1,0 +1,6 @@
+#!/bin/sh
+cp -r "$SNAP/Browser/TorBrowser/.tor project" "$HOME"
+LD_LIBRARY_PATH="$SNAP/Browser:$LD_LIBRARY_PATH" \
+ FONTCONFIG_PATH="$SNAP/Browser/fontconfig" \
+ FONTCONFIG_FILE=fonts.conf \
+ exec firefox.real --class "Tor Browser" --name "Tor Browser" "$@"
