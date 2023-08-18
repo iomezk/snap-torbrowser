@@ -113,7 +113,6 @@ parts:
     - -Browser/TorBrowser/Docs
     - -Browser/abicheck
     - -Browser/application.ini
-    - -Browser/browser/chrome #?
     - -Browser/browser/features
     - -Browser/execdesktop
     - -Browser/firefox
