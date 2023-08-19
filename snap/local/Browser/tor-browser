@@ -1,5 +1,7 @@
 #!/bin/sh
 cp -r "$SNAP/Browser/TorBrowser/.tor project" "$HOME"
+
+cd "$SNAP/Browser"
 LD_LIBRARY_PATH="$SNAP/Browser:$LD_LIBRARY_PATH" \
  FONTCONFIG_PATH="$SNAP/Browser/fontconfig" \
  FONTCONFIG_FILE=fonts.conf \
