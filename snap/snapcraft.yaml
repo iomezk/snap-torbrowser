@@ -85,6 +85,11 @@ parts:
     source-checksum: sha256/326dbf89a9e89fe46d389aa6b990a5fb670f9622a226f20e67e4f2cc9f25e5eb
     source-type: tar
     plugin: dump
+    build-packages:
+    - jq
+    - patch
+    - unzip
+    - zip
     override-build: |
       craftctl default
       cd "$CRAFT_PART_INSTALL"
@@ -94,7 +99,8 @@ parts:
       mv Browser/TorBrowser/Data/Browser Browser/TorBrowser/Data/firefox
       mv Browser/TorBrowser/Data Browser/TorBrowser/.tor\ project
       rm -rf Browser/TorBrowser/Tor
-      for f in "Browser/omni.ja" "Browser/browser/omni.ja"; do
+      # decompressing omni.ja to save space and speed up
+      for f in Browser/omni.ja Browser/browser/omni.ja; do
         unzip -q "$f" -d omni
         rm -f "$f"
         cd omni
@@ -102,11 +108,6 @@ parts:
         cd ..
         rm -rf omni
       done
-    build-packages:
-    - jq
-    - patch
-    - unzip
-    - zip
     prime:
     - -Browser/.config
     - '-Browser/TorBrowser/.tor project/firefox/Caches'
