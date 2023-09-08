@@ -5,5 +5,5 @@ GenericName=Web Browser
 Comment=Tor Browser  is +1 for privacy and −1 for mass surveillance
 Icon=${SNAP}/meta/gui/icon.svg
 Categories=Network;WebBrowser;Security;
-Exec=torbrowser %u
+Exec=tor-browser-unofficial %u
 StartupWMClass=Tor Browser

@@ -1,8 +1,13 @@
-name: torbrowser
+name: tor-browser-unofficial
 adopt-info: tor-browser
 summary: Tor Browser
 description: |
   Fingerprinting resisting browser bundled with Tor
+
+  ___
+  It's highly recommended to enable the browser sandbox:
+
+  sudo snap connect tor-browser-unofficial:browser-support
 source-code: https://github.com/iomezk/snap-torbrowser
 license: MPL-2.0
 base: core22
@@ -11,7 +16,7 @@ grade: stable
 icon: icon.svg
 
 apps:
-  torbrowser:
+  tor-browser-unofficial:
     extensions: [gnome]
     command: Browser/tor-browser
     plugs:
