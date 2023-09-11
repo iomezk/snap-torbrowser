@@ -35,6 +35,10 @@ environment:
 plugs:
   browser-support:
     allow-sandbox: true
+  libavcodec58-core22:
+    interface: content
+    default-provider: libavcodec58-core22
+    target: $SNAP/libavcodec
 
 parts:
   local:
@@ -43,45 +47,20 @@ parts:
     plugin: dump
     prime:
     - -patches/
-  tor:
-    plugin: nil
-    stage-packages:
-    - tor
+  libpci:
+    source: https://mj.ucw.cz/download/linux/pci/pciutils-3.10.0.tar.gz
+    source-checksum: sha256/7deabe38ae5fa88a96a8c4947975cf31c591506db546e9665a10dddbf350ead0
+    source-type: tar
+    plugin: make
+    make-parameters:
+    - ZLIB=no
+    - DNS=no
+    - SHARED=yes
+    - LIBKMOD=no
+    - HWDB=no
+    - PREFIX=/
     organize:
-      usr/bin/tor: Browser/TorBrowser/Tor/tor
-    prime:
-    - Browser/TorBrowser/Tor/tor
-  ffmpeg:
-    plugin: nil
-    stage-packages:
-    - libavcodec58
-    organize:
-      'usr/lib/**/*.so*': Browser/
-    prime:
-    - Browser/libavcodec.*
-    - Browser/libaom.*
-    - Browser/libavutil.*
-    - Browser/libOpenCL.*  # libavutil
-    - Browser/libvdpau.*  # libavutil
-    - Browser/libcodec2.*
-    - Browser/libdav1d.*
-    - Browser/libgsm.*
-    - Browser/libmfx.*
-    - Browser/libshine.*
-    - Browser/libsnappy.*
-    - Browser/libswresample.*
-    - Browser/libsoxr.*  # libswresample
-    - Browser/libx264.*
-    - Browser/libx265.*
-    - Browser/libnuma.*  # libx265
-    - Browser/libxvidcore.*
-    - Browser/libzvbi.*
-  tb-deps:
-    plugin: nil
-    stage-packages:
-    - libpci3
-    organize:
-      '**/*.so*': Browser/
+      lib/libpci.so*: Browser/
     prime:
     - Browser/
   tor-browser:
@@ -103,7 +82,6 @@ parts:
       patch -p1 -i "$CRAFT_PROJECT_DIR/snap/local/patches/fonts-conf-remove-blank.patch"
       mv Browser/TorBrowser/Data/Browser Browser/TorBrowser/Data/firefox
       mv Browser/TorBrowser/Data Browser/TorBrowser/.tor\ project
-      rm -rf Browser/TorBrowser/Tor
       # decompressing omni.ja to save space and speed up
       for f in Browser/omni.ja Browser/browser/omni.ja; do
         unzip -q "$f" -d omni
@@ -117,6 +95,8 @@ parts:
     - -Browser/.config
     - '-Browser/TorBrowser/.tor project/firefox/Caches'
     - -Browser/TorBrowser/Docs
+    - -Browser/TorBrowser/Tor/libstdc++
+    - -Browser/TorBrowser/Tor/libevent*
     - -Browser/abicheck
     - -Browser/application.ini
     - -Browser/browser/features
