@@ -66,8 +66,8 @@ parts:
     - Browser/
   tor-browser:
     # https://dist.torproject.org/torbrowser/
-    source: https://dist.torproject.org/torbrowser/12.5.3/tor-browser-linux64-12.5.3_ALL.tar.xz
-    source-checksum: sha256/405ef5517657c0b8ebd57ba029e156647f515dbe3178a59949c76cfb1b4d7a42
+    source: https://dist.torproject.org/torbrowser/13.0/tor-browser-linux-x86_64-13.0.tar.xz
+    source-checksum: sha256/cdd98f6e6268e450e83a3a1bfbd4c30af0a02a02c7bcb8b76ce32171983c0d53
     source-type: tar
     plugin: dump
     build-packages:
@@ -80,7 +80,6 @@ parts:
       cd "$CRAFT_PART_INSTALL"
       craftctl set "version=$(jq -r .version Browser/tbb_version.json)"
       chmod -R go=rX .
-      patch -p1 -i "$CRAFT_PROJECT_DIR/snap/local/patches/fonts-conf-remove-blank.patch"
       mv Browser/TorBrowser/Data/Browser Browser/TorBrowser/Data/firefox
       mv Browser/TorBrowser/Data Browser/TorBrowser/.tor\ project
       # decompressing omni.ja to save space and speed up
@@ -96,12 +95,12 @@ parts:
     - -Browser/.config
     - '-Browser/TorBrowser/.tor project/firefox/Caches'
     - -Browser/TorBrowser/Docs
-    - -Browser/TorBrowser/Tor/libstdc++
-    - -Browser/TorBrowser/Tor/libevent*
+    - -Browser/TorBrowser/Tor/lib*
     - -Browser/abicheck
     - -Browser/application.ini
     - -Browser/browser/features
     - -Browser/execdesktop
+    - -Browser/fonts/000_README.txt
     - -Browser/firefox
     - -Browser/icons
     - -Browser/libstdc++
