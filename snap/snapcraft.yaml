@@ -36,10 +36,10 @@ environment:
 plugs:
   browser-support:
     allow-sandbox: true
-  libavcodec58-core22:
+  ffmpeg-2204:
     interface: content
-    default-provider: libavcodec58-core22
-    target: $SNAP/libavcodec
+    default-provider: ffmpeg-2204
+    target: ffmpeg-platform
 
 parts:
   local:
